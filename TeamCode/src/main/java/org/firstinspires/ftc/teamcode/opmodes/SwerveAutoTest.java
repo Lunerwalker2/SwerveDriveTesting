@@ -7,15 +7,16 @@
 // This is just a setup for the general autonomous code.
 //
 
-package com.circuitrunners.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 // ***********************************************************************
 // Definitions from Qualcomm code for OpMode recognition
 // ***********************************************************************
 
 
-import com.circuitrunners.SwerveAuto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.SwerveAuto;
 
 @Autonomous(name="Swerve: 9-AutoTEST 1.15", group="Swerve")
 

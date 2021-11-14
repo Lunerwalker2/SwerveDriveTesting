@@ -14,8 +14,7 @@
 // basic robot operations. It simplifies the code in our other program files.
 
 
-package com.circuitrunners;
-
+package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;

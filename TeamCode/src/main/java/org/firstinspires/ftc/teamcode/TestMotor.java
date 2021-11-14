@@ -3,7 +3,7 @@
 // ***********************************************************************
 // Manages the testing of a single motor on a robot
 
-package com.circuitrunners;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 

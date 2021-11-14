@@ -7,7 +7,7 @@
 // This is just a setup for the general autonomous code.
 //
 
-package com.circuitrunners.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 // ***********************************************************************
 // Definitions from Qualcomm code for OpMode recognition
@@ -19,7 +19,7 @@ package com.circuitrunners.opmodes;
 //@Autonomous(name="Swerve: 2-AutoDepot 1.1", group="Swerve")
 
 
-import com.circuitrunners.SwerveAuto;
+import org.firstinspires.ftc.teamcode.SwerveAuto;
 
 //@Disabled
 public class SwerveAutoDepot extends SwerveAuto {

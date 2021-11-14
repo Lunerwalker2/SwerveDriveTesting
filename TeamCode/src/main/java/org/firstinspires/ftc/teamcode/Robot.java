@@ -1,5 +1,4 @@
-package com.circuitrunners;
-
+package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -68,7 +67,7 @@ public class Robot {
         driveTrain.autoDrive(aSpeed, aAngle, aOrient, aDist);
     }
 
-    public void setLauncher(Launcher.LaunchPower power) {
+    public void setLauncher(LaunchPower power) {
         launcher.setPower(power);
     }
 

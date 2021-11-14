@@ -16,8 +16,7 @@
 
 // TODO - Add new log file just for autonomous state results? Or flag at END of each state...
 
-package com.circuitrunners;
-
+package org.firstinspires.ftc.teamcode;
 /*
 import org.firstinspires.ftc.teamcode.vision.MasterVision;
 import org.firstinspires.ftc.teamcode.vision.SampleRandomizedPositions;

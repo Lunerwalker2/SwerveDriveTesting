@@ -46,8 +46,7 @@
 
 // TODO: add separate task to manage the wheels to use the gradual speed (and position) change
 
-package com.circuitrunners;
-
+package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 

@@ -25,7 +25,7 @@
  * is preserved.
  * =============================================================================
  */
-package com.circuitrunners;
+package org.firstinspires.ftc.teamcode;
 
 /**
  * Faster (hopefully) versions of java.lang.Math methods, plus additional ones.

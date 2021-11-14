@@ -1,5 +1,4 @@
-package com.circuitrunners;
-
+package org.firstinspires.ftc.teamcode;
 /**
  * These are the three places we are planning to shoot rings into.
  * The middle goal (MED_GOAL) is only to be used if something breaks and we can't use the high goal.

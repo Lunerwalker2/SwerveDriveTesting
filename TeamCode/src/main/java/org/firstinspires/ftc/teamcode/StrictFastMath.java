@@ -25,8 +25,7 @@
  * is preserved.
  * =============================================================================
  */
-package com.circuitrunners;
-
+package org.firstinspires.ftc.teamcode;
 /**
  * Strict versions of FastMath methods.
  * Cf. README.txt for more info.
