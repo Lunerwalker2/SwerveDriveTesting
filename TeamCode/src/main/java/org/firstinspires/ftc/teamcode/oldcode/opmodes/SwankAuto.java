@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.oldcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.SwerveCore;
+import org.firstinspires.ftc.teamcode.oldcode.SwerveCore;
 
 @Autonomous(name="SwankAuto",group="Swerve")
 public class SwankAuto extends SwerveCore {

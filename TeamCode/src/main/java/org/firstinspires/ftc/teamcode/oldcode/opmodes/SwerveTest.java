@@ -5,13 +5,13 @@
 //
 // This allows us to run a test against each individual motor/servo
 
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.oldcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.SwerveCore;
-import org.firstinspires.ftc.teamcode.TestMotor;
-import org.firstinspires.ftc.teamcode.TestServo;
+import org.firstinspires.ftc.teamcode.oldcode.SwerveCore;
+import org.firstinspires.ftc.teamcode.oldcode.TestMotor;
+import org.firstinspires.ftc.teamcode.oldcode.TestServo;
 
 // ***********************************************************************
 // Definitions from Qualcomm code for OpMode recognition

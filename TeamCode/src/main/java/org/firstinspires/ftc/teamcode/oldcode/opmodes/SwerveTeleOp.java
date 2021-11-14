@@ -3,12 +3,12 @@
 // ***********************************************************************
 // The tele-op mode for swerve robot operations
 
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.oldcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.SwerveCore;
-import org.firstinspires.ftc.teamcode.SwerveDrive;
+import org.firstinspires.ftc.teamcode.oldcode.SwerveCore;
+import org.firstinspires.ftc.teamcode.oldcode.SwerveDrive;
 
 // ***********************************************************************
 // Definitions from Qualcomm code for OpMode recognition

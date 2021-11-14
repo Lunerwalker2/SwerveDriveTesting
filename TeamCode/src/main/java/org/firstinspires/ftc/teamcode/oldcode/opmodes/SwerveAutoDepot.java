@@ -1,5 +1,5 @@
 // ***********************************************************************
-// SwerveAutoSilver
+// SwerveAutoGold
 // ***********************************************************************
 // The autonomous mode for swerve operations for Red team position 1
 
@@ -7,29 +7,29 @@
 // This is just a setup for the general autonomous code.
 //
 
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.oldcode.opmodes;
 
 // ***********************************************************************
 // Definitions from Qualcomm code for OpMode recognition
 // ***********************************************************************
 
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-import org.firstinspires.ftc.teamcode.SwerveAuto;
 
 
-@Autonomous(name="Swerve: 2-AutoCrater 1.1", group="Swerve")
+//@Autonomous(name="Swerve: 2-AutoDepot 1.1", group="Swerve")
+
+
+import org.firstinspires.ftc.teamcode.oldcode.SwerveAuto;
 
 //@Disabled
-public class SwerveAutoCrater extends SwerveAuto {
+public class SwerveAutoDepot extends SwerveAuto {
 
     // ***********************************************************************
-    // SwerveAutoCrater
+    // SwerveAutoDepot
     // ***********************************************************************
     // Constructs the class.
     // The system calls this member when the class is instantiated.
-    public SwerveAutoCrater() {
+    public SwerveAutoDepot() {
         // Initialize base classes.
         // All via self-construction.
 
@@ -43,18 +43,18 @@ public class SwerveAutoCrater extends SwerveAuto {
     // Set needed values for Red alliance position 1
     @Override
     public void init() {
-        swerveDebug(500, "SwerveAutoSilver::init", "STARTing init for Silver");
+        swerveDebug(500, "SwerveAutoGold::init", "STARTing init for Gold");
 
         // Run initialization of other parts of the class
         // Note that the class will connect to all of our motors and servos
         super.init();
+        crater = Boolean.FALSE;
 
-        crater = Boolean.TRUE;
         // Robot and autonomous settings are read in from files in the core class init()
         // Report the autonomous settings
         showAutonomousGoals();
 
-        swerveDebug(500, "SwerveAutoSilver::init", "DONE");
+        swerveDebug(500, "SwerveAutoGold::init", "DONE");
     }
 
 
@@ -65,11 +65,11 @@ public class SwerveAutoCrater extends SwerveAuto {
     // Called once when the OpMode is started.
     @Override
     public void start() {
-        swerveDebug(500, "SwerveAutoSilver::start", "START");
+        swerveDebug(500, "SwerveAutoGold::start", "START");
 
         // Call the super/base class start method.
         super.start();
 
-        swerveDebug( 500, "SwerveAutoSilver::start", "DONE");
+        swerveDebug( 500, "SwerveAutoGold::start", "DONE");
     }
 }

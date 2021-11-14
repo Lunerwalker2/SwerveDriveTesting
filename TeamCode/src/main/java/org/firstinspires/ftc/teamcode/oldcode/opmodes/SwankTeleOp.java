@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.oldcode.opmodes;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.SwerveCore;
+import org.firstinspires.ftc.teamcode.oldcode.SwerveCore;
 
 
 @TeleOp(name="SwankTeleOp",group="Swerve")

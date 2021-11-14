@@ -1,10 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.oldcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -18,9 +17,6 @@ public class Robot {
     private Launcher launcher;
     private WobbleGoalArm goalArm;
     private SwerveDrive driveTrain;
-    private OpenCvCamera webcam;
-
-    private StartStackPipeline startStackPipeline;
 
     private boolean isAuto;
 
@@ -86,8 +82,4 @@ public class Robot {
     public void toggleGoalArm() { goalArm.toggleArm(); }
 
     public void toggleGoalClaw() { goalArm.toggleClaw(); }
-
-    public StartStackPipeline.RingState getRingState() {
-        return startStackPipeline.getState();
-    }
 }

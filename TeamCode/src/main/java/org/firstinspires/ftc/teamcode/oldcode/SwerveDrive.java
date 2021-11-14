@@ -46,10 +46,11 @@
 
 // TODO: add separate task to manage the wheels to use the gradual speed (and position) change
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.oldcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.apache.commons.math3.util.FastMath;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -360,7 +361,7 @@ public class SwerveDrive {
         // use the speed given and change the angle
 
         // record the requested speed
-        mSpeed = FastMath.sqrt( FastMath.pow2( moveX ) + FastMath.pow2( moveY ));
+        mSpeed = FastMath.sqrt( FastMath.pow(moveX, 2) + FastMath.pow(moveY, 2));
 
         if (( curSwerveMode == swerveModes.SWERVE_DRIVE_TURN ) || ( curSwerveMode == swerveModes.SWERVE_AUTO )) {
 
@@ -502,16 +503,16 @@ public class SwerveDrive {
 
         // calculate speed/position for each wheel
         // --- right front wheel
-        speeds[0]    = FastMath.sqrt( FastMath.pow2( frontX ) + FastMath.pow2( rightY ));
+        speeds[0]    = FastMath.sqrt( FastMath.pow(frontX, 2 ) + FastMath.pow(rightY, 2));
         positions[0] = FastMath.atan2( frontX, rightY ) * SWERVE_SCALE;
         // --- left front wheel
-        speeds[1]    = FastMath.sqrt( FastMath.pow2( frontX ) + FastMath.pow2( leftY ));
+        speeds[1]    = FastMath.sqrt( FastMath.pow(frontX, 2) + FastMath.pow(leftY, 2));
         positions[1] = FastMath.atan2( frontX, leftY ) * SWERVE_SCALE;
         // --- right rear wheel
-        speeds[3]    = FastMath.sqrt( FastMath.pow2( backX ) + FastMath.pow2( rightY ));
+        speeds[3]    = FastMath.sqrt( FastMath.pow(backX, 2) + FastMath.pow(rightY, 2));
         positions[3] = FastMath.atan2( backX, rightY ) * SWERVE_SCALE;
         // --- left rear wheel
-        speeds[2]    = FastMath.sqrt( FastMath.pow2( backX ) + FastMath.pow2( leftY ));
+        speeds[2]    = FastMath.sqrt( FastMath.pow(backX, 2) + FastMath.pow(leftY, 2));
         positions[2] = FastMath.atan2( backX, leftY ) * SWERVE_SCALE;
 
         // normalize speeds - always <= 1

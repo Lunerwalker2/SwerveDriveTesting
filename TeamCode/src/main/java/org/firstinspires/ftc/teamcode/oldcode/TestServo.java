@@ -3,7 +3,7 @@
 // ***********************************************************************
 // Manages the testing of a single servo on a robot
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.oldcode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class TestServo {
