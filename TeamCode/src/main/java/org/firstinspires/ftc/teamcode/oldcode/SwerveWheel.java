@@ -33,6 +33,7 @@ import java.util.InputMismatchException;
 // SwerveWheel
 // ***********************************************************************
 // Class definitions
+@Deprecated
 public class SwerveWheel {
     public DcMotor motor;
     private Servo servo;

@@ -65,7 +65,7 @@ import java.io.FileOutputStream;
 // SwerveDrive
 // ***********************************************************************
 // Class definitions.
-
+@Deprecated
 public class SwerveDrive {
 
 
