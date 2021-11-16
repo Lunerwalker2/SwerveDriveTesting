@@ -39,7 +39,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH) {
 
     data class SwerveModule(val motor: DcMotorEx, val servo: CRServo, val moduleOrientationSensor: ModuleOrientationSensor,
-    val orientationController: PIDFController)
+    var orientationController: PIDFController)
 
     @JvmField
     var TRANSLATIONAL_PID = PIDCoefficients(0.0, 0.0, 0.0)
@@ -91,25 +91,25 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
                 hardwareMap[DcMotorEx::class.java, "leftFrontMotor"],
                 hardwareMap[CRServo::class.java, "leftFrontServo"],
                 AbsoluteEncoderOrientationSensor(hardwareMap, "leftFrontEncoder"),
-                PIDFController(PIDCoefficients(0.5))
+                PIDFController(MODULE_ROTATION_PID)
         )
         leftRear = SwerveModule(
                 hardwareMap[DcMotorEx::class.java, "leftRearMotor"],
                 hardwareMap[CRServo::class.java, "leftRearServo"],
                 AbsoluteEncoderOrientationSensor(hardwareMap, "leftRearEncoder"),
-                PIDFController(PIDCoefficients(0.5))
+                PIDFController(MODULE_ROTATION_PID)
         )
         rightRear = SwerveModule(
                 hardwareMap[DcMotorEx::class.java, "rightRearMotor"],
                 hardwareMap[CRServo::class.java, "rightRearServo"],
                 AbsoluteEncoderOrientationSensor(hardwareMap, "rightRearEncoder"),
-                PIDFController(PIDCoefficients(0.5))
+                PIDFController(MODULE_ROTATION_PID)
         )
         rightFront = SwerveModule(
                 hardwareMap[DcMotorEx::class.java, "rightFrontMotor"],
                 hardwareMap[CRServo::class.java, "rightFrontServo"],
                 AbsoluteEncoderOrientationSensor(hardwareMap, "rightFrontSensor"),
-                PIDFController(PIDCoefficients(0.5))
+                PIDFController(MODULE_ROTATION_PID)
         )
 
 
@@ -211,6 +211,9 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
         updatePoseEstimate()
         val signal = trajectorySequenceRunner.update(poseEstimate, poseVelocity)
         if(signal != null) setDriveSignal(signal)
+        modules.forEach {
+            it.orientationController.update(it.moduleOrientationSensor.getModuleOrientation())
+        }
     }
 
     fun waitForIdle() {
@@ -241,6 +244,12 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
         )
         for (module in modules) {
             module.motor.setPIDFCoefficients(runMode, compensatedCoefficients)
+        }
+    }
+
+    fun setModuleRotationCoefficients(coefficients: PIDCoefficients){
+        modules.forEach {
+            it.orientationController = PIDFController(coefficients)
         }
     }
 
