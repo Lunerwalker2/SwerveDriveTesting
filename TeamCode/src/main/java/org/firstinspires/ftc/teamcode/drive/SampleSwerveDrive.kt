@@ -143,7 +143,7 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 
-        trajectorySequenceRunner = TrajectorySequenceRunner(follower, SampleMecanumDrive.HEADING_PID)
+        trajectorySequenceRunner = TrajectorySequenceRunner(follower, HEADING_PID)
 
     }
 
