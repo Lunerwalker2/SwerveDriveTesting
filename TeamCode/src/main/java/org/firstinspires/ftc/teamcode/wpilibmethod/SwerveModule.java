@@ -30,9 +30,14 @@ import org.firstinspires.ftc.teamcode.AS5600;
 public class SwerveModule {
     private static final double kWheelRadius = 0.0508; // meters TODO: Change
     private static final int kEncoderResolution = 4096; //TODO: Change
+    private static final double DRIVE_MOTOR_MAX_RPM = 300; //TODO: Change this
+    private static final double GEAR_RATIO = 1.0;
+
 
     private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
     private static final double kModuleMaxAngularAcceleration = FastMath.toRadians(60); //TODO: Change
+
+
 
     private final DcMotorEx m_driveMotor;
     private final CRServo m_turningServo;
@@ -49,6 +54,12 @@ public class SwerveModule {
                     0,
                     new TrapezoidProfile.Constraints(
                             kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+
+
+
+    //My initial values are guesses, although the drive motor initial values are from rr.
+    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.002, 1.0 / rpmToVelocity(DRIVE_MOTOR_MAX_RPM));
+    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.002, 0.5);
 
 
     public SwerveModule(HardwareMap hardwareMap, String motorName, String servoName, String sensorName) {
@@ -68,8 +79,21 @@ public class SwerveModule {
 
     }
 
+    /**
+     * Returns the current wheel velocity in meters/sec.
+     * @return Wheel velocity in m/s
+     */
     public double getMotorSpeedMeters(){
-        return m_driveMotor.getVelocity(AngleUnit.RADIANS) * 2 * Math.PI * kWheelRadius / kEncoderResolution;
+        return m_driveMotor.getVelocity() / kEncoderResolution * (2.0 * Math.PI *kWheelRadius);
+    }
+
+    /**
+     * Converts the given velocity in m/s to an encoder velocity in ticks/sec
+     * @param meters Velocity in m/s
+     * @return Velocity in ticks/sec
+     */
+    public double metersPerSecondToTicks(double meters){
+        return meters / (2.0 * Math.PI * kWheelRadius) * kEncoderResolution;
     }
 
     /**
@@ -78,7 +102,7 @@ public class SwerveModule {
      * @return The current state of the module.
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(m_driveMotor.getVelocity(AngleUnit.DEGREES), new Rotation2d(sensor.getAngle())); //TODO: needs to be in radians
+        return new SwerveModuleState(getMotorSpeedMeters(), new Rotation2d(sensor.getAngle(AngleUnit.RADIANS))); //TODO: needs to be in radians
     }
 
     /**
@@ -87,19 +111,32 @@ public class SwerveModule {
      * @param desiredState Desired state with speed and angle.
      */
     public void setDesiredState(SwerveModuleState desiredState) {
-        // Optimize the reference state to avoid spinning further than 90 degreesg
-        SwerveModuleState state = optimize(desiredState, new Rotation2d(sensor.getAngle()));
 
-        // Calculate the drive output in encoder velocity ticks/sec
-        final double driveOutput = state.speedMetersPerSecond / (2 * Math.PI * kWheelRadius) * kEncoderResolution;
+        //Read the angle of the module once; it's an expensive i2c operation
+        double angle = sensor.getAngle(AngleUnit.RADIANS);
 
-        // Calculate the turning motor output from the turning PID controller.
+        // Optimize the reference state to avoid spinning further than 90 degrees
+        SwerveModuleState state = optimize(desiredState, new Rotation2d(angle));
+
+        // Calculate the PID drive output in encoder velocity ticks/sec
+        final double driveOutput =
+                m_drivePIDController.calculate(getMotorSpeedMeters(), metersPerSecondToTicks(state.speedMetersPerSecond));
+
+        //Find the FF output for the wheel
+        final double driveFeedforward =
+                m_driveFeedforward.calculate(metersPerSecondToTicks(state.speedMetersPerSecond));
+
+        // Calculate the turning cr servo output from the turning PID controller.
         final double turnOutput =
-                m_turningPIDController.calculate(sensor.getAngle(), state.angle.getRadians());
+                m_turningPIDController.calculate(angle, state.angle.getRadians());
+        
+        //Find the FF output for the cr servo
+        final double turnFeedforward =
+                m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
 
-        m_driveMotor.setVelocity(driveOutput);
-        m_turningServo.setPower(turnOutput);
+        m_driveMotor.setVelocity(driveOutput + driveFeedforward);
+        m_turningServo.setPower(turnOutput + turnFeedforward);
     }
 
     /**
@@ -121,4 +158,9 @@ public class SwerveModule {
             return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
         }
     }
+
+    public static double rpmToVelocity(double rpm) {
+        return rpm * GEAR_RATIO * 2 * Math.PI * kWheelRadius / 60.0;
+    }
+
 }

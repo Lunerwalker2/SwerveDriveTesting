@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.ControlSystem;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
@@ -10,6 +12,7 @@ import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 import com.qualcomm.robotcore.util.TypeConversion;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
 //@I2cDeviceType
@@ -20,9 +23,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 //        compatibleControlSystems = ControlSystem.REV_HUB
 //)
 public class AS5600 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
-
-    //I2c address
-    public static final I2cAddr ADDRESS_I2C_DEFAULT = I2cAddr.create7bit(0x36);
 
     //All user-intractable registers
     /*
@@ -68,69 +68,54 @@ public class AS5600 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
             this.bVal = bVal;
         }
 
-
-    }
-
-    protected void setOptimalReadWindow(){
-        // Sensor registers are read repeatedly and stored in a register. This method specifies the
-        // registers and repeat read mode
-        I2cDeviceSynch.ReadWindow readWindow = new I2cDeviceSynch.ReadWindow(
-                Register.FIRST.bVal,
-                Register.LAST.bVal - Register.FIRST.bVal + 1,
-                I2cDeviceSynch.ReadMode.REPEAT);
-        this.deviceClient.setReadWindow(readWindow);
-    }
-
-    protected synchronized byte read8(final Register reg){
-        return deviceClient.read8(reg.bVal);
-    }
-
-    protected synchronized void write8(final Register reg, final int data){
-        this.deviceClient.write8(reg.bVal, data);
     }
 
     /**
-     * returns angle in 0 to 360?
+     * returns angle in the specified unit in euler angles, i.e, -180 to 180 or -pi to pi.
      *
      * PLACEHOLDER OF 23 RN
      */
-    public double getAngle(){
-        return 23;
+    public double getAngle(AngleUnit unit){
+        short data = getRawAngle();
+
+        return unit.fromDegrees(data);
     }
 
-    //Writes two bytes of data starting at the given register
-    protected void writeShort(final Register reg, short value)
-    {
-        deviceClient.write(reg.bVal, TypeConversion.shortToByteArray(value));
+    /**
+     * Returns the scaled angle (the ANGLE reg as opposed to the RAW_ANGLE reg) in degrees.
+     *
+     * From the factory the range is 0 to 360 with a 10-LSB hysteresis between 0 and 360.
+     * If the range has been changed, this output will follow that instead.
+     * @return Raw angle reading degrees
+     */
+    public short getRawAngle(){
+        short raw = readShort(Register.ANGLE_HI);
+
+        //number is 12 bit, so mask the top 4 bits to 0s
+        raw &= 0x0fff;
+        return raw;
     }
 
-    //Reads two bytes of data starting at the given register
-    protected short readShort(Register reg)
-    {
+    protected void writeShort(Register reg, short data){
+        deviceClient.write(reg.bVal, TypeConversion.shortToByteArray(data));
+    }
+
+    protected short readShort(Register reg){
         return TypeConversion.byteArrayToShort(deviceClient.read(reg.bVal, 2));
     }
-    protected void waitForWriteCompletions()
-    {
-        // We use ATOMIC for legacy reasons, but now that we have WRITTEN, that might
-        // be a better choice.
-        this.deviceClient.waitForWriteCompletions(I2cWaitControl.WRITTEN);
+
+    protected byte read8(final Register reg){
+        return deviceClient.read8(reg.bVal);
     }
 
-
-    public short getNumOfPermWritesRaw(){
-        return readShort(Register.ZMCO);
+    protected void write8(final Register reg, final int data){
+        this.deviceClient.write8(reg.bVal, data);
     }
 
-    public void angleProgram(Telemetry telemetry){
-        telemetry.addLine("Put Sensor in start position.");
-        short raw_angle = readShort(Register.RAW_ANGLE_HI);
-        writeShort(Register.ZPOS_HI, raw_angle);
-
-    }
 
     @Override
     public Manufacturer getManufacturer(){
-        return Manufacturer.Unknown;
+        return Manufacturer.AMS;
     }
 
     @Override
@@ -147,12 +132,13 @@ public class AS5600 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     public AS5600(I2cDeviceSynch deviceClient){
         super(deviceClient, true);
 
-        setOptimalReadWindow();
-        this.deviceClient.setI2cAddress(ADDRESS_I2C_DEFAULT);
+        this.deviceClient.setI2cAddress(I2cAddr.create7bit(0x36));
 
         super.registerArmingStateCallback(false); //Deals with the USB getting unplugged
         // Sensor starts off disengaged so we can change things like I2C address. Need to engage
         this.deviceClient.engage();
+
+
     }
 
 }

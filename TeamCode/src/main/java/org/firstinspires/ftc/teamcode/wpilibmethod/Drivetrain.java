@@ -25,8 +25,8 @@ https://github.com/wpilibsuite/allwpilib/tree/main/wpilibjExamples/src/main/java
  */
 
 public class Drivetrain {
-    public static final double kMaxSpeed = 3.0; // 3 meters per second
-    public static final double kMaxAngularSpeed = FastMath.toRadians(130); // 1/2 rotation per second
+    public static final double kMaxSpeed = 1.02; // 40 inches per second
+    public static final double kMaxAngularSpeed = FastMath.toRadians(60); // 60 deg/sec turning
 
     //meters
     private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
@@ -41,7 +41,7 @@ public class Drivetrain {
 
     private final ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
-    private BNO055IMU imu;
+    private final BNO055IMU imu;
 
     private final SwerveDriveKinematics m_kinematics =
             new SwerveDriveKinematics(

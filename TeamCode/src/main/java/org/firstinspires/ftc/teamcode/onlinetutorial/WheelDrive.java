@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.AS5600;
 
 /*
@@ -59,13 +60,13 @@ public class WheelDrive {
      * of concept more than anything right now.
      *
      * speed is 0 to 1
-     * angle is -1 to 0
+     * angle is -1 to 1
      */
     public void drive(double speed, double angle){
         speedMotor.setPower(speed);
 
         angleController.setTargetPosition(angle * 180.0); //convert to euler angles
-        angleServo.setPower(angleController.update(angleSensor.getAngle())); //TODO: FIX ACTUAL SENSOR
+        angleServo.setPower(angleController.update(angleSensor.getAngle(AngleUnit.DEGREES)));
 
     }
 
