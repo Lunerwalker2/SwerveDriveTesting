@@ -15,13 +15,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-//@I2cDeviceType
-//@DeviceProperties(
-//        name = "AS5600 Magnetic Rotary Sensor",
-//        description = "A magnetic sensor that tracks heading.",
-//        xmlTag = "AS5600",
-//        compatibleControlSystems = ControlSystem.REV_HUB
-//)
+@I2cDeviceType
+@DeviceProperties(
+        name = "AS5600 Magnetic Rotary Sensor",
+        description = "A magnetic sensor that tracks heading.",
+        xmlTag = "AS5600",
+        compatibleControlSystems = ControlSystem.REV_HUB
+)
 public class AS5600 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
 
     //All user-intractable registers

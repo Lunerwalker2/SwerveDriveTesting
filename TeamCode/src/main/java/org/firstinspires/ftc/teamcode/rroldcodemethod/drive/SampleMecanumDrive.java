@@ -1,4 +1,16 @@
-package org.firstinspires.ftc.teamcode.rrmethod.drive;
+package org.firstinspires.ftc.teamcode.rroldcodemethod.drive;
+
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.kV;
 
 import androidx.annotation.NonNull;
 
@@ -26,26 +38,14 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.rrmethod.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.rrmethod.trajectorysequence.TrajectorySequenceBuilder;
-import org.firstinspires.ftc.teamcode.rrmethod.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.rrmethod.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.rroldcodemethod.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.rroldcodemethod.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.rroldcodemethod.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.rroldcodemethod.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.rrmethod.drive.DriveConstants.kV;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
