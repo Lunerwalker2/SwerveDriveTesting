@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode.differential.philobots;
 
+import static org.firstinspires.ftc.teamcode.differential.philobots.RobotUtil.checkDeadband;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.differential.philobots.math.Vector2d;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Diff Swerve TeleOp", group = "TeleOp")
-public class TeleOp extends LinearOpMode {
+@TeleOp(name = "Diff Swerve TeleOp", group = "TeleOp")
+public class TestTeleOp extends LinearOpMode {
     Robot robot;
-
-    //deadband for joysticks
-    public double DEADBAND_MAG = 0.1;
-    public Vector2d DEADBAND_VEC = new Vector2d(DEADBAND_MAG, DEADBAND_MAG);
 
     public boolean willResetIMU = true;
 
@@ -36,6 +35,7 @@ public class TeleOp extends LinearOpMode {
 
         while (opModeIsActive()){
             Vector2d joystick1 = new Vector2d(gamepad1.left_stick_x, -gamepad1.left_stick_y); //LEFT joystick
+            //the y parameter here isn't used
             Vector2d joystick2 = new Vector2d(gamepad1.right_stick_x, -gamepad2.right_stick_y); //RIGHT joystick
 
             robot.driveController.updateUsingJoysticks(checkDeadband(joystick1), checkDeadband(joystick2));
@@ -59,13 +59,5 @@ public class TeleOp extends LinearOpMode {
 
             telemetry.update();
         }
-    }
-
-    //returns zero vector if joystick is within deadband
-    public Vector2d checkDeadband(Vector2d joystick) {
-        if (Math.abs(joystick.getX()) > DEADBAND_VEC.getX() || Math.abs(joystick.getY()) > DEADBAND_VEC.getY()) {
-            return joystick;
-        }
-        return Vector2d.ZERO;
     }
 }

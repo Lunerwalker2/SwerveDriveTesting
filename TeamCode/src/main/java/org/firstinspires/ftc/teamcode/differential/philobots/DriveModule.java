@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.differential.philobots;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.differential.philobots.math.Angle;
 import org.firstinspires.ftc.teamcode.differential.philobots.math.Vector2d;
@@ -9,8 +10,8 @@ public class DriveModule {
     Robot robot;
 
     //TODO: make sure these motors are not flipped on your drive
-    DcMotor motor1; //top motor
-    DcMotor motor2; //bottom motor
+    DcMotorEx motor1; //top motor
+    DcMotorEx motor2; //bottom motor
 
     public final ModuleSide moduleSide;
     public final Vector2d positionVector; //position of module relative to robot COM (center of mass)
@@ -64,12 +65,12 @@ public class DriveModule {
         this.robot = robot;
         this.moduleSide = moduleSide;
         if (moduleSide == ModuleSide.RIGHT) {
-            motor1 = robot.hardwareMap.dcMotor.get("rightTopMotor");
-            motor2 = robot.hardwareMap.dcMotor.get("rightBottomMotor");
+            motor1 = robot.hardwareMap.get(DcMotorEx.class, "rightTopMotor");
+            motor2 = robot.hardwareMap.get(DcMotorEx.class, "rightBottomMotor");
             positionVector = new Vector2d((double)18/2, 0); //points from robot center to right module
         } else {
-            motor1 = robot.hardwareMap.dcMotor.get("leftTopMotor");
-            motor2 = robot.hardwareMap.dcMotor.get("leftBottomMotor");
+            motor1 = robot.hardwareMap.get(DcMotorEx.class, "leftTopMotor");
+            motor2 = robot.hardwareMap.get(DcMotorEx.class, "leftBottomMotor");
             positionVector = new Vector2d((double)-18/2, 0); //points from robot center to left module
         }
 
@@ -238,15 +239,16 @@ public class DriveModule {
     public void resetEncoders () {
         motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);//These were originally RUE, changed them to RWE
+        motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //returns module orientation relative to ROBOT (not field) in degrees and NEG_180_TO_180_HEADING type
     public Angle getCurrentOrientation() {
         robot.telemetry.addData(moduleSide + "Motor 1 Encoder", motor1.getCurrentPosition());
         robot.telemetry.addData(moduleSide + "Motor 2 Encoder", motor2.getCurrentPosition());
-        double rawAngle = (double)(motor2.getCurrentPosition() + motor1.getCurrentPosition())* DEGREES_PER_TICK; //motor2-motor1 makes ccw positive (?)
+        double rawAngle = (double)(motor2.getCurrentPosition() + motor1.getCurrentPosition())* DEGREES_PER_TICK;
+//        double rawAngle = (double)(motor2.getCurrentPosition() + motor1.getCurrentPosition())* DEGREES_PER_TICK; //motor2-motor1 makes ccw positive (?)
         return new Angle(rawAngle, Angle.AngleType.ZERO_TO_360_HEADING);
     }
 
