@@ -35,21 +35,29 @@ import org.firstinspires.ftc.teamcode.coaxial.rrmethod.trajectorysequence.Trajec
 
 class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH) {
 
-    data class SwerveModule(val motor: DcMotorEx, val servo: CRServo, val moduleOrientationSensor: ModuleOrientationSensor,
-    var orientationController: PIDFController)
-
+    data class SwerveModule(val motor: DcMotorEx, val servo: Servo)
     @JvmField
     var TRANSLATIONAL_PID = PIDCoefficients(0.0, 0.0, 0.0)
     @JvmField
     var HEADING_PID = PIDCoefficients(0.0, 0.0, 0.0)
-    @JvmField
-    var MODULE_ROTATION_PID = PIDCoefficients(0.0, 0.0, 0.0)
-
 
     private val trajectorySequenceRunner: TrajectorySequenceRunner
 
-    private val VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH)
-    private val ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL)
+    companion object {
+        private val VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH)
+        private val ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL)
+
+        fun getVelocityConstraint(maxVel: Double, maxAngularVel: Double, trackWidth: Double): TrajectoryVelocityConstraint {
+            return MinVelocityConstraint(listOf(
+                    AngularVelocityConstraint(maxAngularVel),
+                    MecanumVelocityConstraint(maxVel, trackWidth)
+            ))
+        }
+
+        fun getAccelerationConstraint(maxAccel: Double): TrajectoryAccelerationConstraint {
+            return ProfileAccelerationConstraint(maxAccel)
+        }
+    }
 
     private val follower: TrajectoryFollower
 
@@ -63,7 +71,6 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
     private val batteryVoltageSensor: VoltageSensor
 
     private val modules: List<SwerveModule>
-
 
     init {
 
@@ -85,39 +92,29 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
         }
 
         leftFront = SwerveModule(
-                hardwareMap[DcMotorEx::class.java, "leftFrontMotor"],
-                hardwareMap[CRServo::class.java, "leftFrontServo"],
-                AbsoluteEncoderOrientationSensor(hardwareMap, "leftFrontEncoder"),
-                PIDFController(MODULE_ROTATION_PID)
+                hardwareMap[DcMotorEx::class.java, "LeftFrontM"],
+                hardwareMap[Servo::class.java, "LeftFrontS"]
         )
         leftRear = SwerveModule(
-                hardwareMap[DcMotorEx::class.java, "leftRearMotor"],
-                hardwareMap[CRServo::class.java, "leftRearServo"],
-                AbsoluteEncoderOrientationSensor(hardwareMap, "leftRearEncoder"),
-                PIDFController(MODULE_ROTATION_PID)
+                hardwareMap[DcMotorEx::class.java, "LeftRearM"],
+                hardwareMap[Servo::class.java, "leftRearS"]
         )
         rightRear = SwerveModule(
-                hardwareMap[DcMotorEx::class.java, "rightRearMotor"],
-                hardwareMap[CRServo::class.java, "rightRearServo"],
-                AbsoluteEncoderOrientationSensor(hardwareMap, "rightRearEncoder"),
-                PIDFController(MODULE_ROTATION_PID)
+                hardwareMap[DcMotorEx::class.java, "RightFrontM"],
+                hardwareMap[Servo::class.java, "RightRearS"]
         )
         rightFront = SwerveModule(
-                hardwareMap[DcMotorEx::class.java, "rightFrontMotor"],
-                hardwareMap[CRServo::class.java, "rightFrontServo"],
-                AbsoluteEncoderOrientationSensor(hardwareMap, "rightFrontSensor"),
-                PIDFController(MODULE_ROTATION_PID)
+                hardwareMap[DcMotorEx::class.java, "RightFrontM"],
+                hardwareMap[Servo::class.java, "RightFrontS"]
         )
 
+        //Set the servos to initial positions
+        leftFront.servo.position = 0.5
+        leftRear.servo.position = 0.5
+        rightFront.servo.position = 0.5
+        rightRear.servo.position = 0.5
 
         modules = listOf(leftFront, leftRear, rightRear, rightFront)
-
-        //TODO: If update is called at init before any drive instructions, the modules will zero themselves
-        modules.forEach {
-            it.orientationController.setInputBounds(-Math.PI, Math.PI)
-            it.orientationController.setOutputBounds(-1.0, 1.0)
-            it.orientationController.targetPosition = 0.0
-        }
 
         for (module in modules) {
             val motorConfigurationType = module.motor.motorType.clone()
@@ -208,9 +205,6 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
         updatePoseEstimate()
         val signal = trajectorySequenceRunner.update(poseEstimate, poseVelocity)
         if(signal != null) setDriveSignal(signal)
-        modules.forEach {
-            it.orientationController.update(it.moduleOrientationSensor.getModuleOrientation())
-        }
     }
 
     fun waitForIdle() {
@@ -220,7 +214,6 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
     fun isBusy(): Boolean {
         return trajectorySequenceRunner.isBusy
     }
-
 
     fun setMode(runMode: RunMode) {
         for (module in modules) {
@@ -244,12 +237,6 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
         }
     }
 
-    fun setModuleRotationCoefficients(coefficients: PIDCoefficients){
-        modules.forEach {
-            it.orientationController = PIDFController(coefficients)
-        }
-    }
-
     override fun setMotorPowers(v: Double, v1: Double, v2: Double, v3: Double) {
         leftFront.motor.power = v
         leftRear.motor.power = v1
@@ -260,14 +247,15 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
     override fun setModuleOrientations(frontLeft: Double, rearLeft: Double, rearRight: Double, frontRight: Double) {
         val orientations = listOf(frontLeft, rearLeft, rearRight, frontRight)
         for(i in 0..3){
-            modules[i].orientationController.targetPosition = orientations[i]
+            modules[i].servo.position = orientations[i]
         }
     }
 
     override fun getModuleOrientations(): List<Double> {
         val moduleOrientations = ArrayList<Double>()
+        //Doesn't actually return the current position, just the last commanded position
         for(module in modules){
-            moduleOrientations.add(module.moduleOrientationSensor.getModuleOrientation())
+            moduleOrientations.add(module.servo.position)
         }
         return moduleOrientations
     }
@@ -279,7 +267,6 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
         }
         return wheelPositions
     }
-
 
     override fun getWheelVelocities(): List<Double> {
         val wheelVelocities: MutableList<Double> = ArrayList()
@@ -312,17 +299,8 @@ class SampleSwerveDrive(private val hardwareMap: HardwareMap) : SwerveDrive(kV, 
         // Adjust the axis rotation rate as necessary
         // Rotate about the z axis is the default assuming your REV Hub/Control Hub is laying
         // flat on a surface
-        return imu.angularVelocity.zRotationRate.toDouble()
+        return -imu.angularVelocity.xRotationRate.toDouble()
     }
 
-    fun getVelocityConstraint(maxVel: Double, maxAngularVel: Double, trackWidth: Double): TrajectoryVelocityConstraint {
-        return MinVelocityConstraint(listOf(
-                AngularVelocityConstraint(maxAngularVel),
-                MecanumVelocityConstraint(maxVel, trackWidth)
-        ))
-    }
 
-    fun getAccelerationConstraint(maxAccel: Double): TrajectoryAccelerationConstraint {
-        return ProfileAccelerationConstraint(maxAccel)
-    }
 }
